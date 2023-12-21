@@ -23,35 +23,52 @@ class App(customtkinter.CTk):
         # self.grid_rowconfigure(0, weight=1)
         # self.playing_field_frame = customtkinter.CTkFrame(self)
         # self.playing_field_frame.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="nsw")
-                
+        
+        self.playing_field_frame = customtkinter.CTkFrame(self)
+        self.playing_field_frame.grid(row=0, column=0, sticky="nsew")
+        
+        self.cheating_frame = customtkinter.CTkFrame(self)
+        self.cheating_frame.grid(row=0, column=1, sticky="nsew")
+        
+        #region playing_field_frame
         self.color_optionmenus = []
         for i in range(4):
-            self.color_optionmenus.append(customtkinter.CTkOptionMenu(self, values=self.colors, width=30, height=30))
+            self.color_optionmenus.append(customtkinter.CTkOptionMenu(self.playing_field_frame, values=self.colors, width=30, height=30))
             # self.color_optionmenus[i].variable = i
             self.color_optionmenus[i].grid(row=1, column=i, padx=5, pady=5)
             
-        button = customtkinter.CTkButton(self, text="?", command=self.test_code_event, width=30, height=30)
+        button = customtkinter.CTkButton(self.playing_field_frame, text="?", command=self.test_code_event, width=30, height=30)
         button.grid(row=1, column=4, padx=5, pady=5)
         
         self.option_labels = []
         for i in range(10):
             row = []
             for j in range(5):
-                row.append(customtkinter.CTkLabel(self, width=30, height=30))
+                row.append(customtkinter.CTkLabel(self.playing_field_frame, width=30, height=30))
                 row[j].grid(row=i+2, column=j, padx=5, pady=5)
             self.option_labels.append(row)
         
-        self.counting_label = customtkinter.CTkLabel(self, width=150, height=30)
+        self.counting_label = customtkinter.CTkLabel(self.playing_field_frame, width=150, height=30)
         self.counting_label.grid(row=12, column=0, columnspan=4, padx=5, pady=5)
         
-        button = customtkinter.CTkButton(self, text="Cheat!", command=self.cheat_event, width=40, height=30)
+        button = customtkinter.CTkButton(self.playing_field_frame, text="Cheat!", command=self.cheat_event, width=40, height=30)
         button.grid(row=12, column=4, padx=5, pady=5)
+        #endregion
         
+        #region cheating_frame
+        self.colors_label = customtkinter.CTkLabel(self.cheating_frame, text="")
+        self.colors_label.grid(row=0, column=0, padx=5, pady=5)
+        self.all_possibles_label = customtkinter.CTkLabel(self.cheating_frame, text="")
+        self.all_possibles_label.grid(row=1, column=0, padx=5, pady=5)
+        
+        
+        
+        #endregion
         self.start_new_game()
 
     def cheat_event(self):
+        self.all_possibles_label.configure(text=f"All possibles: \n{', '.join(self.possibles)}")
         print(self.possibles)
-        
         
         
     def start_new_game(self):
