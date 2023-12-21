@@ -75,4 +75,51 @@ def filter_possibles(possibles, attempt, result):
             
     return new_possibles
 
+def colors_not_in_use(possibles):
+    colors = get_all_colors()
+    for possible in possibles:
+        for color in possible:
+            if color in colors:
+                colors.remove(color)
+    return colors
+
+def colors_sure_of(possibles):
+    colors = list(possibles[0])
+    for possible in possibles:
+        test = colors.copy()
+        for color in colors:
+            if color not in possible:
+                test.remove(color)
+        if len(test) == 0:
+            return []
+        colors = test
+    return colors
+
+assert colors_sure_of(["ABCD", "ABCE", "ABCF", "GHIA"]) == ['A']
+assert colors_sure_of(["ABCD", "ABCE", "ABCF"]) == ["A", "B", "C"]
+
+def positions_sure_of(possibles):
+    positions = list(possibles[0])
+    
+    for possible in possibles:
+        test = positions.copy()
+        for i in range(len(positions)):
+            if positions[i] != possible[i]:
+                test.remove(positions[i])
+        if len(test) == 0:
+            return []
+        positions = test
+    
+    return positions
+
+assert positions_sure_of(["ABCD", "ABCE", "ABCF"]) == ['A', 'B', 'C']
+assert positions_sure_of(["ABCD", "ECBA", "ABCF"]) == []
+
+def set_text_box_text(tb, text_lst):
+    tb.configure(state="normal")
+    tb.delete("0.0", "end")
+    tb.insert("0.0",f"{', '.join(text_lst)}")
+    tb.configure(state="disabled")
+    
+    print(text_lst)
 #endregion

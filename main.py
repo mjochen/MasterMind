@@ -34,7 +34,7 @@ class App(customtkinter.CTk):
         self.color_optionmenus = []
         for i in range(4):
             self.color_optionmenus.append(customtkinter.CTkOptionMenu(self.playing_field_frame, values=self.colors, width=30, height=30))
-            # self.color_optionmenus[i].variable = i
+            self.color_optionmenus[i].set(self.colors[i])
             self.color_optionmenus[i].grid(row=1, column=i, padx=5, pady=5)
             
         button = customtkinter.CTkButton(self.playing_field_frame, text="?", command=self.test_code_event, width=30, height=30)
@@ -56,10 +56,26 @@ class App(customtkinter.CTk):
         #endregion
         
         #region cheating_frame
-        self.colors_label = customtkinter.CTkLabel(self.cheating_frame, text="")
-        self.colors_label.grid(row=0, column=0, padx=5, pady=5)
-        self.all_possibles_label = customtkinter.CTkLabel(self.cheating_frame, text="")
-        self.all_possibles_label.grid(row=1, column=0, padx=5, pady=5)
+        frame_width = 150
+        customtkinter.CTkLabel(self.cheating_frame, text="Colors not in use:", width=frame_width, height=30).grid(row=0, column=0, padx=5, pady=5)
+        self.colors_not_in_use_tb = customtkinter.CTkTextbox(self.cheating_frame, wrap="none", width=frame_width, height=60) 
+        self.colors_not_in_use_tb.grid(row=1, column=0, padx=5, pady=5)
+        
+        customtkinter.CTkLabel(self.cheating_frame, text="Colors sure of:", width=frame_width, height=30).grid(row=2, column=0, padx=5, pady=5)
+        self.colors_sure_of_tb = customtkinter.CTkTextbox(self.cheating_frame, wrap="none", width=frame_width, height=60) 
+        self.colors_sure_of_tb.grid(row=3, column=0, padx=5, pady=5)
+        
+        customtkinter.CTkLabel(self.cheating_frame, text="Positions sure of:", width=frame_width, height=30).grid(row=4, column=0, padx=5, pady=5)
+        self.positions_sure_tb = customtkinter.CTkTextbox(self.cheating_frame, wrap="none", width=frame_width, height=60) 
+        self.positions_sure_tb.grid(row=5, column=0, padx=5, pady=5)
+        
+        customtkinter.CTkLabel(self.cheating_frame, text="All possibilities:", width=frame_width, height=30).grid(row=6, column=0, padx=5, pady=5)
+        self.all_possible_tb = customtkinter.CTkTextbox(self.cheating_frame, wrap="none", width=frame_width, height=60) 
+        self.all_possible_tb.grid(row=7, column=0, padx=5, pady=7)
+        
+        
+        # self.all_possibles_label = customtkinter.CTkLabel(self.cheating_frame, text="")
+        # self.all_possibles_label.grid(row=1, column=0, padx=5, pady=5)
         
         
         
@@ -67,8 +83,14 @@ class App(customtkinter.CTk):
         self.start_new_game()
 
     def cheat_event(self):
-        self.all_possibles_label.configure(text=f"All possibles: \n{', '.join(self.possibles)}")
-        print(self.possibles)
+        set_text_box_text(self.colors_not_in_use_tb, colors_not_in_use(self.possibles))
+        set_text_box_text(self.colors_sure_of_tb, colors_sure_of(self.possibles))
+        set_text_box_text(self.positions_sure_tb, positions_sure_of(self.possibles))
+        set_text_box_text(self.all_possible_tb, self.possibles)
+        
+        
+        # self.all_possibles_label.configure(text=f"All possibles: \n{', '.join(self.possibles)}")
+        # print(self.possibles)
         
         
     def start_new_game(self):
@@ -89,6 +111,9 @@ class App(customtkinter.CTk):
         attempt = "".join([ i.get() for i in self.color_optionmenus ])
         if attempt == self.code:
             tkinter.messagebox.showinfo("Mastermind", "You won!")
+        if attempt not in self.possibles:
+            tkinter.messagebox.showerror("Mastermind", "Invalid attempt!")
+            return
             
         for i in range(len(self.option_labels)-1, 0, -1):
             for j, label in enumerate(self.option_labels[i]):
